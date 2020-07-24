@@ -162,9 +162,7 @@ def register_services(hass):
             vol.Required(ATTR_GW_ID): vol.All(
                 cv.string, vol.In(hass.data[DATA_OPENTHERM_GW][DATA_GATEWAYS])
             ),
-            vol.Required(ATTR_DHW_OVRD): vol.Any(
-                vol.Equal("A"), vol.All(vol.Coerce(int), vol.Range(min=0, max=1))
-            ),
+            vol.Required(ATTR_DHW_OVRD): vol.Any(vol.Equal("A"), cv.boolean),
         }
     )
     service_set_gpio_mode_schema = vol.Schema(
@@ -276,7 +274,11 @@ def register_services(hass):
         """Set the domestic hot water override on the OpenTherm Gateway."""
         gw_dev = hass.data[DATA_OPENTHERM_GW][DATA_GATEWAYS][call.data[ATTR_GW_ID]]
         gw_var = gw_vars.OTGW_DHW_OVRD
-        value = await gw_dev.gateway.set_hot_water_ovrd(call.data[ATTR_DHW_OVRD])
+        if call.data[ATTR_DHW_OVRD] == "A":
+            arg = "A"
+        else:
+            arg = 1 if call.data[ATTR_DHW_OVRD] else 0
+        value = await gw_dev.gateway.set_hot_water_ovrd(arg)
         gw_dev.status.update({gw_var: value})
         async_dispatcher_send(hass, gw_dev.update_signal, gw_dev.status)
 

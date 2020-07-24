@@ -64,9 +64,9 @@ set_hot_water_ovrd:
         been configured to let the room unit control when to keep a
         small amount of water preheated, this command can influence
         that.
-        Value should be 0 or 1 to enable the override in off or on
+        Value should be a boolean to enable the override in off or on
         state, or "A" to disable the override.
-      example: "1"
+      example: "on"
 
 set_hot_water_setpoint:
   description: >
