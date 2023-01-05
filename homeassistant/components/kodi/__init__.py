@@ -10,6 +10,7 @@ from homeassistant.const import (
     CONF_PASSWORD,
     CONF_PORT,
     CONF_SSL,
+    CONF_TIMEOUT,
     CONF_USERNAME,
     EVENT_HOMEASSISTANT_STOP,
     Platform,
@@ -38,7 +39,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         entry.data[CONF_USERNAME],
         entry.data[CONF_PASSWORD],
         entry.data[CONF_SSL],
-        session=async_get_clientsession(hass),
+        entry.data[CONF_TIMEOUT],
+        async_get_clientsession(hass),
     )
 
     kodi = Kodi(conn)
